@@ -7,7 +7,7 @@
 int Config::readConfig(const std::string path) {
     std::ifstream file(path);
     if (!file.is_open()) {
-        return -1;
+        return 0;
     }
 
     std::string line;
@@ -23,5 +23,5 @@ int Config::readConfig(const std::string path) {
         }
     }
 
-    return 0;
+    return 1;
 }

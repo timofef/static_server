@@ -3,13 +3,14 @@
 
 #include "Config.h"
 #include "Server.h"
+#include "Client.h"
 
 
-#define SERVER_PORT 8085
+#define SERVER_PORT 80
 
 int main() {
     Config config;
-    int isOk = config.readConfig("/httpd.conf");
+    int isOk = config.readConfig("/etc/httpd.conf");
     if (!isOk) {
         std::cout << "Can't parse config" << std::endl;
         return -1;
@@ -31,14 +32,12 @@ int main() {
 
         while (1) {
             std::shared_ptr<Client> client = server.connect();
-            client.serve();
+            client->serve();
         }
     }
     catch (std:: exception& ex) {
         std::cout << "exception:   " << ex.what() << std::endl;
     }
-
-    std::cout << "Prefork server successfully started at port " << SERVER_PORT << std::endl;
 
     return 0;
 }

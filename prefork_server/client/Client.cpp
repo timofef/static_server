@@ -3,8 +3,10 @@
 #include <sys/sendfile.h>
 #include <fcntl.h>
 #include <sys/socket.h>
+#include <cstring>
 #include "Client.h"
-#include "Parser.cpp"
+#include "Parser.h"
+#include "Handler.h"
 
 Client::Client(int sock, std::string doc): socket(sock), document_root(doc){}
 
@@ -17,12 +19,13 @@ Client::~Client() {
 void Client::serve() {
     std::string requestStr = read();
     try {
-        int isParsed = parse(request, requestStr);
+        int isParsed = parse(requestStr, request);
         if (isParsed) {
-            handler(request, response, document_root, );
-            write();
+            std::string path;
+            int file_size = handler(request, response, document_root, path);
+            write(path, file_size);
         } else {
-            error_handler(response, request);
+            errorHandler(response);
             write("", 0);
         }
     }
@@ -32,31 +35,46 @@ void Client::serve() {
 }
 
 std::string Client::read() const {
+    std::string result;
+    int bytes = 8000;
+    char *buf = new char[bytes];
+    size_t r = 0;
+    while (r != bytes) {
+        ssize_t rc = ::recv(socket, buf + r, bytes - r, 0);
+        if (rc == -1 || rc == 0) {
+            delete [] buf;
+            throw std::runtime_error("read failed: " + std::string(strerror(errno)));
+        }
 
+        r += rc;
+        result.append(buf, rc);
+        if (result.find("\r\n\r\n") != std::string::npos) {
+            break;
+        }
+    }
+
+    delete [] buf;
+    return result;
 }
 
 void Client::write(const std::string &path, int size_file) {
     send(response.data(), response.size());
 
     if (request.method == "GET" && !path.empty()) {
-        sendfile(path, size_file);
+        int fd = open(path.c_str(), 0);
+        ::sendfile(socket, fd, 0, size_file);
+        close(fd);
     }
 }
 
-void Client::sendfile(const std::string &path, int size_file) {
-    int fd = open(path.c_str(), 0);
-    ::sendfile(socket, fd, 0, size_file);
-    close(fd);
-}
-
-void Client::send(const char *start, int size) const {
+void Client::send(const char *str, int size) const {
     size_t left = size;
     ssize_t sent = 0;
     int flags = 0;
 
     while (left > 0) {
-        sent = ::send(socket, start + sent, size - sent, flags);
-        if (-1 == sent)
+        sent = ::send(socket, str + sent, size - sent, flags);
+        if (!sent)
             throw std::runtime_error("write failed: " + std::string(strerror(errno)));
         left -= sent;
     }

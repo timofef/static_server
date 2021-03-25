@@ -1,17 +1,26 @@
 FROM ubuntu:20.04 AS release
 MAINTAINER Timofei Makarov
 
-RUN  apt-get update
-RUN  yes | apt-get install cmake
+RUN apt-get update
+RUN apt-get install -y tzdata
+
+ENV TZ=Russia/Moscow
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN  yes | apt-get install make \
+                           g++ \
+                           cmake
 
 WORKDIR /app
 
 COPY . .
 
-COPY ./httptest ./var/www/html/httptest
+COPY ./httpd.conf /etc/httpd.conf
 
-RUN mkdir ./mybuild && cd ./mybuild
+COPY ./static ./var/www/html/httptest
+
+RUN mkdir ./build && cd ./build
 RUN cmake -DCMAKE_BUILD_TYPE=Release ./
 RUN make
 
-CMD ./static_server
+CMD echo "\n\n" && ./static_server

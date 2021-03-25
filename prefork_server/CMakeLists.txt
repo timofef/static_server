@@ -7,4 +7,5 @@ include_directories(config server client parser structs handler)
 
 add_executable(static_server main.cpp
         config/Config.cpp server/Server.cpp
-        client/Client.cpp parser/Parser.cpp)
+        client/Client.cpp parser/Parser.cpp
+        handler/Handler.cpp)

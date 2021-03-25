@@ -2,7 +2,7 @@
 #include <sstream>
 #include "Request.h"
 
-int parse(const std::string from, Request *to) {
+int parse(const std::string from, Request& to) {
     std::stringstream ss(from);
     ss >> to.method;
     ss >> to.uri;
@@ -20,4 +20,6 @@ int parse(const std::string from, Request *to) {
             return -1;
         }
     }
+
+    return -1;
 }

@@ -1,6 +1,7 @@
 #ifndef STATIC_SERVER_CLIENT_H
 #define STATIC_SERVER_CLIENT_H
 
+#include "Request.h"
 
 class Client {
 public:
@@ -15,8 +16,7 @@ private:
 
     std::string read() const;
     void write(const std::string& path, int size_file);
-    void sendfile(const std::string& path, int size_file);
-    void send(const char* start, int size) const;
+    void send(const char* str, int size) const;
 };
 
 
