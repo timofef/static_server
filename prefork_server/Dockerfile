@@ -23,4 +23,6 @@ RUN mkdir ./build && cd ./build
 RUN cmake -DCMAKE_BUILD_TYPE=Release ./
 RUN make
 
-CMD echo "\n\n" && ./static_server
+EXPOSE 80
+
+CMD ./static_server

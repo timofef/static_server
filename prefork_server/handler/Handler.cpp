@@ -65,7 +65,7 @@ int handler(Request request, std::string& response, std::string document_root, s
     }
     catch (std::filesystem::filesystem_error& e) {
         bad_path = true;
-        std::cout << e.what() << '\n';
+        //std::cout << e.what() << std::endl;
         if (request.uri.rfind("index.html") != std::string::npos) {
             response = "HTTP/1.0 403 Forbidden\r\nServer: PreforkServer\r\nConnection: close\r\n\r\n";
         } else {
@@ -78,10 +78,11 @@ int handler(Request request, std::string& response, std::string document_root, s
 
     std::string mime_type = get_mime_type(request.uri.substr(pos));
     std::stringstream resp;
-    resp << "HTTP/1.1 200 OK\r\n" << "Content-Type: " << mime_type << "\r\n"
-         << "Server: PreforkServer\r\n" << "Content-Length: " << size
-         << "\r\nConnection: close"
-         << "\r\n\r\n";
+    resp << "HTTP/1.1 200 OK\r\n"
+         << "Content-Type: " << mime_type << "\r\n"
+         << "Server: PreforkServer\r\n"
+         << "Content-Length: " << size << "\r\n"
+         << "Connection: close" << "\r\n\r\n";
 
     response = std::move(resp.str());
 

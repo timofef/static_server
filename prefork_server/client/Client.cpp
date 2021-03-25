@@ -43,7 +43,7 @@ std::string Client::read() const {
         ssize_t rc = ::recv(socket, buf + r, bytes - r, 0);
         if (rc == -1 || rc == 0) {
             delete [] buf;
-            throw std::runtime_error("read failed: " + std::string(strerror(errno)));
+            throw std::runtime_error("read fail: " + std::string(strerror(errno)));
         }
 
         r += rc;
@@ -75,7 +75,7 @@ void Client::send(const char *str, int size) const {
     while (left > 0) {
         sent = ::send(socket, str + sent, size - sent, flags);
         if (!sent)
-            throw std::runtime_error("write failed: " + std::string(strerror(errno)));
+            throw std::runtime_error("write fail: " + std::string(strerror(errno)));
         left -= sent;
     }
 }
