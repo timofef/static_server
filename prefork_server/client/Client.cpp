@@ -42,8 +42,7 @@ std::string Client::read() const {
     while (r != bytes) {
         ssize_t received = ::recv(socket, buf + r, bytes - r, 0);
         if (received == -1 || received == 0) {
-            delete [] buf;
-            return result;
+            break;
         }
 
         r += received;
@@ -74,7 +73,7 @@ void Client::send(const char *str, int size) const {
 
     while (left > 0) {
         sent = ::send(socket, str + sent, size - sent, flags);
-        if (!sent)
+        if (sent == -1)
             throw std::runtime_error("write fail: " + std::string(strerror(errno)));
         left -= sent;
     }

@@ -6,17 +6,17 @@
 #include "Request.h"
 #include "Types.h"
 
-std::string url_decode(std::string& fileName) {
+std::string url_decode(std::string& filename) {
     std::string tmp;
-    for (int i = 0; i < fileName.size(); ++i) {
-        if (fileName[i] == '%') { // decode character if in hex
+    for (int i = 0; i < filename.size(); ++i) {
+        if (filename[i] == '%') { // decode character if in hex
             int sym;
-            sscanf(fileName.substr(i + 1, 2).c_str(), "%x", &sym);
+            sscanf(filename.substr(i + 1, 2).c_str(), "%x", &sym);
             char ch = static_cast<char>(sym);
             tmp += ch;
             i += 2;
         } else {
-            tmp += fileName[i];
+            tmp += filename[i];
         }
     }
 
