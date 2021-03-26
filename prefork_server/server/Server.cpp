@@ -38,9 +38,9 @@ Server::~Server() {
 std::shared_ptr<Client> Server::connect() {
     struct sockaddr_in client;
     memset(&client, 0, sizeof(client));
-    socklen_t client_len = sizeof(client);
+    socklen_t client_size = sizeof(client);
 
-    int client_sd = ::accept(socket, (struct sockaddr*)&client, &client_len);
+    int client_sd = ::accept(socket, (struct sockaddr*)&client, &client_size);
     if (!client_sd) {
         return std::shared_ptr<Client>();
     }

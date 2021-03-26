@@ -11,7 +11,7 @@ std::string url_decode(std::string& file_name) {
     int j = 0;
     char ch;
     for (int i = 0; i < file_name.size(); ++i) {
-        if (int(file_name[i]) == 37) {
+        if (file_name[i] == '%') { // decode character if in hex
             sscanf(file_name.substr(i + 1, 2).c_str(), "%x", &j);
             ch = static_cast<char>(j);
             tmp += ch;

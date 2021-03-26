@@ -40,14 +40,14 @@ std::string Client::read() const {
     char *buf = new char[bytes];
     size_t r = 0;
     while (r != bytes) {
-        ssize_t rc = ::recv(socket, buf + r, bytes - r, 0);
-        if (rc == -1 || rc == 0) {
+        ssize_t received = ::recv(socket, buf + r, bytes - r, 0);
+        if (received == -1 || received == 0) {
             delete [] buf;
-            throw std::runtime_error("read fail: " + std::string(strerror(errno)));
+            return result;
         }
 
-        r += rc;
-        result.append(buf, rc);
+        r += received;
+        result.append(buf, received);
         if (result.find("\r\n\r\n") != std::string::npos) {
             break;
         }
