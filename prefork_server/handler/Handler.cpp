@@ -6,18 +6,17 @@
 #include "Request.h"
 #include "Types.h"
 
-std::string url_decode(std::string& file_name) {
+std::string url_decode(std::string& fileName) {
     std::string tmp;
-    int j = 0;
-    char ch;
-    for (int i = 0; i < file_name.size(); ++i) {
-        if (file_name[i] == '%') { // decode character if in hex
-            sscanf(file_name.substr(i + 1, 2).c_str(), "%x", &j);
-            ch = static_cast<char>(j);
+    for (int i = 0; i < fileName.size(); ++i) {
+        if (fileName[i] == '%') { // decode character if in hex
+            int sym;
+            sscanf(fileName.substr(i + 1, 2).c_str(), "%x", &sym);
+            char ch = static_cast<char>(sym);
             tmp += ch;
             i += 2;
         } else {
-            tmp += file_name[i];
+            tmp += fileName[i];
         }
     }
 
@@ -65,7 +64,6 @@ int handler(Request request, std::string& response, std::string document_root, s
     }
     catch (std::filesystem::filesystem_error& e) {
         bad_path = true;
-        //std::cout << e.what() << std::endl;
         if (request.uri.rfind("index.html") != std::string::npos) {
             response = "HTTP/1.0 403 Forbidden\r\nServer: PreforkServer\r\nConnection: close\r\n\r\n";
         } else {
@@ -76,10 +74,10 @@ int handler(Request request, std::string& response, std::string document_root, s
         return 0;
     }
 
-    std::string mime_type = get_mime_type(request.uri.substr(pos));
+    std::string mimeType = get_mime_type(request.uri.substr(pos));
     std::stringstream resp;
     resp << "HTTP/1.1 200 OK\r\n"
-         << "Content-Type: " << mime_type << "\r\n"
+         << "Content-Type: " << mimeType << "\r\n"
          << "Server: PreforkServer\r\n"
          << "Content-Length: " << size << "\r\n"
          << "Connection: close" << "\r\n\r\n";

@@ -30,7 +30,7 @@ int main() {
             }
         }
 
-        while (1) {
+        for(;;) {
             std::shared_ptr<Client> client = server.connect();
             client->serve();
         }

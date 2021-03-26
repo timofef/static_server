@@ -17,7 +17,6 @@ std::unordered_map<std::string, std::string> mime_types = { {".txt", "text/plain
                                                             {".mp4", "video/mp4"}};
 
 std::string get_mime_type(std::string extension) {
-    //std::cout << extension << std::endl;
     std::transform(extension.begin(), extension.end(), extension.begin(),
                    [](unsigned char c){ return std::tolower(c); });
     auto it = mime_types.find(extension);
