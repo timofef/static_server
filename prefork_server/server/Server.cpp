@@ -19,7 +19,7 @@ Server::Server(int port, Config* config) {
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    if(bind(sd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
+    if (bind(sd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
         close(sd);
         throw std::runtime_error("bind: " + std::string(strerror(errno)));
     }
